@@ -1,14 +1,11 @@
 package com.example.testproject.Model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Data
 @NoArgsConstructor@AllArgsConstructor
@@ -22,4 +19,8 @@ public class AppUser {
     private String emailId;
     private Long mobile;
 
+    @ManyToOne
+    @JsonIgnore
+    @JoinColumn(name="group_id",referencedColumnName = "groupId")
+    private Groups groups;
 }

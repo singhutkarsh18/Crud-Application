@@ -2,8 +2,11 @@ package com.example.testproject.Controller;
 
 import com.example.testproject.Model.AppUser;
 import com.example.testproject.Service.Implementation.UserServiceImpl;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,6 +18,13 @@ import javax.persistence.EntityNotFoundException;
 @RequestMapping("/api")
 public class CrudController {
     private UserServiceImpl userService;
+
+    @Operation(summary = "Use this to add a user")
+    @ApiResponses(value= {
+            @ApiResponse(responseCode = "201", description = "Successfully added user to db",content = {@Content(mediaType = "application/json")}),
+            @ApiResponse(responseCode = "417", description = "User already present",content = {@Content(mediaType = "application/json")})
+        }
+    )
     @PostMapping("/add/user")
     public ResponseEntity<?> addUser(@RequestBody AppUser appUser)
     {
