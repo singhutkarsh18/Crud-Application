@@ -22,7 +22,8 @@ public class CrudController {
     @Operation(summary = "Use this to add a user")
     @ApiResponses(value= {
             @ApiResponse(responseCode = "201", description = "Successfully added user to db",content = {@Content(mediaType = "application/json")}),
-            @ApiResponse(responseCode = "417", description = "User already present",content = {@Content(mediaType = "application/json")})
+            @ApiResponse(responseCode = "417", description = "User already present",content = {@Content(mediaType = "application/json")}),
+            @ApiResponse(responseCode = "406", description = "Invalid email/mobile",content = {@Content(mediaType = "application/json")})
         }
     )
     @PostMapping("/add/user")
@@ -31,11 +32,21 @@ public class CrudController {
         try {
             return ResponseEntity.status(HttpStatus.CREATED).body(userService.createUser(appUser));
         }
-        catch (UnsupportedOperationException e)
+        catch (UnsupportedOperationException e1)
         {
-            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(e.getLocalizedMessage());
+            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(e1.getLocalizedMessage());
+        }
+        catch (IllegalStateException e2)
+        {
+            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(e2.getLocalizedMessage());
         }
     }
+    @Operation(summary = "Use this to get all users")
+    @ApiResponses(value= {
+            @ApiResponse(responseCode = "200", description = "All users are shown",content = {@Content(mediaType = "application/json")}),
+            @ApiResponse(responseCode = "404", description = "No user found in db",content = {@Content(mediaType = "application/json")})
+    }
+    )
     @GetMapping("/get/allUsers")
     public ResponseEntity<?> getAllUsers()
     {
@@ -47,6 +58,12 @@ public class CrudController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getLocalizedMessage());
         }
     }
+    @Operation(summary = "Use this to get user by id")
+    @ApiResponses(value= {
+            @ApiResponse(responseCode = "200", description = "User is shown",content = {@Content(mediaType = "application/json")}),
+            @ApiResponse(responseCode = "404", description = "User not found",content = {@Content(mediaType = "application/json")})
+    }
+    )
     @GetMapping("/get/user/{userId}")
     public ResponseEntity<?> getUserById(@PathVariable("userId") Long userId)
     {
@@ -58,6 +75,12 @@ public class CrudController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getLocalizedMessage());
         }
     }
+    @Operation(summary = "Use this to update user details")
+    @ApiResponses(value= {
+            @ApiResponse(responseCode = "200", description = "User details are updated",content = {@Content(mediaType = "application/json")}),
+            @ApiResponse(responseCode = "404", description = "User not found in db",content = {@Content(mediaType = "application/json")})
+    }
+    )
     @PutMapping("/update/user")
     public ResponseEntity<?> updateUserDetails(@RequestBody AppUser appUser)
     {
@@ -69,6 +92,12 @@ public class CrudController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getLocalizedMessage());
         }
     }
+    @Operation(summary = "Use this to delete a user")
+    @ApiResponses(value= {
+            @ApiResponse(responseCode = "200", description = "User deleted",content = {@Content(mediaType = "application/json")}),
+            @ApiResponse(responseCode = "404", description = "Requested user not found in db",content = {@Content(mediaType = "application/json")})
+    }
+    )
     @DeleteMapping("/delete/user/{userId}")
     public ResponseEntity<?> deleteUser(@PathVariable("userId") Long userId)
     {
